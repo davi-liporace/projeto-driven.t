@@ -21,8 +21,13 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
       ...req.body,
       userId: req.userId,
     });
+    const cepTest = await enrollmentsService.getAddressFromCEP(req.body.address.cep)
 
-    return res.sendStatus(httpStatus.OK);
+    if(cepTest.erro){
+      return( res.sendStatus(httpStatus.BAD_REQUEST))
+    }
+    else{    
+    return res.sendStatus(httpStatus.OK)};
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
