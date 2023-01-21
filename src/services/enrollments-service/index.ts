@@ -6,15 +6,20 @@ import { exclude } from "@/utils/prisma-utils";
 import { Address, Enrollment } from "@prisma/client";
 
 async function getAddressFromCEP(cep : string) {
-  const result = await request.get(`https://viacep.com.br/ws/${cep}/json/`);
+  const {data} = await request.get(`https://viacep.com.br/ws/${cep}/json/`);
 
-  if (!result.data) {
+  if (!data) {
     throw notFoundError();
   }
-  if(result.data.error){
-    throw notFoundError();
-  }
-  return(result.data)
+  return(
+    {
+      bairro: data.bairro,
+      cidade:data.localidade,
+      complemento:data.complemento,
+      logradouro:data.logradouro,
+      uf:data.uf
+    }
+  )
 }
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
